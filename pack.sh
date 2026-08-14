@@ -7,13 +7,13 @@ set -e
 
 VERSION=$(jq -r '.version | join(".")' kpm/manifest.json)
 
-# Kindle's libcjson.so lacks convenience add functions (pre-1.6.0); compile static fixup
-arm-kindlehf-linux-gnueabihf-gcc -c -o /tmp/cjson_addboolfixup_hf.o stubs/cjson_addboolfixup.c
+# kindlepw2 only: libcjson.so (fw 5.16.2.1.1) lacks convenience add functions (pre-1.6.0)
+# kindlehf devices ship newer libcjson that has these natively — do NOT link the stub there
 arm-kindlepw2-linux-gnueabi-gcc -c -o /tmp/cjson_addboolfixup_pw2.o stubs/cjson_addboolfixup.c
 # kindlepw2 sysroot glibc 2.12 lacks getauxval (added in 2.16)
 arm-kindlepw2-linux-gnueabi-gcc -c -o /tmp/getauxval_stub.o stubs/getauxval_stub.c
 
-RUSTFLAGS="-C link-arg=/tmp/cjson_addboolfixup_hf.o" cargo build-hf
+cargo build-hf
 RUSTFLAGS="-C link-arg=/tmp/getauxval_stub.o -C link-arg=/tmp/cjson_addboolfixup_pw2.o" cargo build-pw2
 
 rm -rf build dist

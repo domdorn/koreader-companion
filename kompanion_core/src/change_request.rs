@@ -220,6 +220,12 @@ mod tests {
                 .unwrap(),
             "/mnt/us/scripts/test.sh.sdr/icon.png"
         );
+
+        // Regression: cjson stub linked into kindlehf build caused TypeError here
+        // because kindlehf libcjson already has these functions natively.
+        // Stub must only be linked for kindlepw2.
+        assert!(insert.get_object_item("isVisibleInHome").is_ok());
+        assert!(insert.get_object_item("isArchived").is_ok());
     }
 
     #[test]

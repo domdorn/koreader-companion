@@ -5,9 +5,10 @@
  * type checks (cJSON_is_val_array instead of cJSON_IsArray).
  * Confirmed missing on firmware 5.16.2.1.1 (Kindle Oasis 9th gen / kindlepw2).
  *
- * Provide implementations that are self-contained and don't depend on
- * any Amazon-specific naming, so the stubs work on all Kindle firmware
- * variants (kindlepw2 and kindlehf alike).
+ * kindlehf devices (fw 5.19.2+) ship a newer libcjson that has these functions
+ * natively — linking this stub there causes TypeError at runtime because our
+ * implementation subtly differs from what cjson-bindings 0.6 expects. Only
+ * link this stub for kindlepw2.
  *
  * cJSON type constants (stable across all known cJSON versions):
  *   cJSON_False=0, cJSON_True=1, cJSON_NULL=2, cJSON_Number=3,
